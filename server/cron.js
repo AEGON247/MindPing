@@ -2,7 +2,6 @@ require("dotenv").config();
 const twilio = require("twilio");
 const cron = require("node-cron");
 const admin = require("firebase-admin");
-const { db } = require("./firebase-admin");
 
 // Initialize Twilio
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
