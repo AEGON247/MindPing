@@ -6,6 +6,7 @@
   <title>Login | MindPing</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <script type="module" src="login.js"></script>
   <style>
     body {
       margin: 0;
@@ -18,7 +19,6 @@
       height: 100vh;
       color: #ffffff;
     }
-
     .login-box {
       background-color: rgba(0, 0, 0, 0.75);
       padding: 2rem;
@@ -27,7 +27,6 @@
       text-align: center;
       width: 320px;
     }
-
     input {
       font-family: 'Press Start 2P', cursive;
       width: 100%;
@@ -40,7 +39,6 @@
       color: #0ff;
       font-size: 12px;
     }
-
     button {
       margin-top: 1rem;
       padding: 0.5rem 1rem;
@@ -51,14 +49,8 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
-    #otpSection {
-      display: none;
-    }
-
-    #recaptcha-container {
-      margin-top: 1rem;
-    }
+    #otpSection { display: none; }
+    #recaptcha-container { margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -75,14 +67,53 @@
     </div>
   </div>
 
-  <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-<!-- Your Firebase config file -->
-<script src="./firebase-config.js"></script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_C5INwZtDA2cjz5VG3slhpg1hkmvmgH8",
+      authDomain: "mind-ping.firebaseapp.com",
+      projectId: "mind-ping",
+      storageBucket: "mind-ping.appspot.com",
+      messagingSenderId: "889858727227",
+      appId: "1:889858727227:web:a1eb1b70b7c0b8b92b6b1e",
+      measurementId: "G-HX1QPJPZ8S"
+    };
 
-  <script src="login.js"></script>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+      'size': 'normal',
+      'callback': () => {
+        console.log('Recaptcha solved ✅');
+      }
+    }, auth);
+
+    document.getElementById("sendOtp").addEventListener("click", async () => {
+      const phone = document.getElementById("phoneNumber").value;
+      const appVerifier = window.recaptchaVerifier;
+
+      try {
+        const result = await signInWithPhoneNumber(auth, phone, appVerifier);
+        window.confirmationResult = result;
+        document.getElementById("otpSection").style.display = "block";
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+
+    document.getElementById("verifyOtp").addEventListener("click", async () => {
+      const code = document.getElementById("otp").value;
+      try {
+        await window.confirmationResult.confirm(code);
+        alert("✅ Logged in successfully!");
+        window.location.href = "index.html";
+      } catch (err) {
+        alert("❌ Incorrect OTP");
+      }
+    });
+  </script>
 </body>
 </html>

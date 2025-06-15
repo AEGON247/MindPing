@@ -14,7 +14,6 @@
       background-size: cover;
       color: #ffffff;
     }
-
     .dashboard-card {
       max-width: 600px;
       margin: 5vh auto;
@@ -24,7 +23,6 @@
       box-shadow: 0 0 20px #00ffe1;
       text-align: center;
     }
-
     canvas#moodChart {
       margin-top: 1rem;
     }
@@ -38,19 +36,68 @@
     <canvas id="moodChart" width="400" height="200"></canvas>
   </div>
 
-  <!-- Load Chart.js as module -->
+  <!-- Load Chart.js and app logic as modules -->
   <script type="module">
     import Chart from "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.min.js";
-    window.Chart = Chart;
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_C5INwZtDA2cjz5VG3slhpg1hkmvmgH8",
+      authDomain: "mind-ping.firebaseapp.com",
+      projectId: "mind-ping",
+      storageBucket: "mind-ping.appspot.com",
+      messagingSenderId: "889858727227",
+      appId: "1:889858727227:web:a1eb1b70b7c0b8b92b6b1e",
+      measurementId: "G-HX1QPJPZ8S"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const ctx = document.getElementById("moodChart").getContext("2d");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userId = user.phoneNumber;
+        const moodsRef = collection(db, "users", userId, "moods");
+        const snapshot = await getDocs(moodsRef);
+
+        const moodEntries = snapshot.docs.map(doc => doc.data());
+        moodEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        const labels = moodEntries.map(e => e.date);
+        const data = moodEntries.map(e => e.mood);
+
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels,
+            datasets: [{
+              label: "Mood (1 = Bad, 5 = Great)",
+              data,
+              borderColor: "#00ffe1",
+              borderWidth: 2,
+              pointBackgroundColor: "#fff"
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                min: 1,
+                max: 5,
+                ticks: { stepSize: 1 }
+              }
+            }
+          }
+        });
+      } else {
+        alert("Please sign in to view your mood data.");
+        window.location.href = "login.html";
+      }
+    });
   </script>
-
-  <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"></script>
-
-<!-- Your Firebase config file -->
-<script src="./firebase-config.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>

@@ -1,21 +1,22 @@
+// script.js
+import { db, auth } from "./firebase-config.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 const ctx = document.getElementById("moodChart").getContext("2d");
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-firebase.auth().onAuthStateChanged(async (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const userId = user.phoneNumber; // Firestore doc ID
+    const userId = user.phoneNumber;
     loadMoodChart(userId);
   } else {
     alert("Please sign in to view your mood data.");
-    // You can redirect to login if needed
   }
 });
 
 async function loadMoodChart(userId) {
-  const moodsRef = db.collection("users").doc(userId).collection("moods");
-  const snapshot = await moodsRef.get();
+  const moodsRef = collection(db, "users", userId, "moods");
+  const snapshot = await getDocs(moodsRef);
   const moodEntries = [];
 
   snapshot.forEach(doc => moodEntries.push(doc.data()));

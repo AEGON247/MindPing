@@ -1,16 +1,22 @@
+// login.js
 import { auth } from "./firebase-config.js";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-  size: 'normal',
+// Initialize reCAPTCHA
+window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
+  size: "normal",
   callback: (response) => {
     console.log("reCAPTCHA verified");
   },
-  'expired-callback': () => {
+  "expired-callback": () => {
     alert("reCAPTCHA expired. Please try again.");
   }
-});
+}, auth);
 
+// Handle Send OTP
 document.getElementById("sendOtp").addEventListener("click", async () => {
   const phoneNumber = document.getElementById("phoneNumber").value;
 
@@ -25,13 +31,14 @@ document.getElementById("sendOtp").addEventListener("click", async () => {
   }
 });
 
+// Handle OTP Verification
 document.getElementById("verifyOtp").addEventListener("click", async () => {
   const otp = document.getElementById("otp").value;
 
   try {
     const result = await window.confirmationResult.confirm(otp);
     alert("Login successful!");
-    window.location.href = "index.html"; // Redirect to dashboard
+    window.location.href = "index.html";
   } catch (error) {
     alert("Invalid OTP. Try again.");
   }
