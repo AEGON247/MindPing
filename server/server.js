@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const cron = require("node-cron");
 const path = require("path");
 const { sendDailyCheckIn } = require("./cron");
-const { handleSmsWebhook } = require("./twilioWebhook");
+const { handleSmsWebhook } = require("./sms");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
