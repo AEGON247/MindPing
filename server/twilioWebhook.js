@@ -1,10 +1,5 @@
 require("dotenv").config();
-const express = require("express");
-const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
-
-const app = express();
-app.use(bodyParser.urlencoded({ extended: false })); // Twilio sends data as x-www-form-urlencoded
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
@@ -19,10 +14,10 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-// Incoming SMS Webhook
-app.post("/sms", async (req, res) => {
-  const from = req.body.From;          // e.g. "+919876543210"
-  const message = req.body.Body.trim(); // e.g. "3"
+// ✅ This is your exported webhook handler
+const handleSmsWebhook = async (req, res) => {
+  const from = req.body.From;
+  const message = req.body.Body.trim();
 
   const mood = parseInt(message, 10);
   if (!mood || mood < 1 || mood > 5) {
@@ -41,10 +36,7 @@ app.post("/sms", async (req, res) => {
   console.log(`✅ Logged mood ${mood} for ${from}`);
 
   res.send(`<Response><Message>Thanks! Your mood (${mood}) was logged 💖</Message></Response>`);
-});
+};
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 SMS webhook server running on port ${PORT}`);
-});
+// ✅ Export it
+module.exports = { handleSmsWebhook };
