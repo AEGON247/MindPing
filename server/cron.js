@@ -4,7 +4,7 @@ const cron = require("node-cron");
 const admin = require("firebase-admin");
 
 // Initialize Twilio
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 const fromNumber = process.env.TWILIO_PHONE_NUMBER;
 
 // Initialize Firebase Admin
