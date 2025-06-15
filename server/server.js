@@ -9,7 +9,7 @@ const { handleSmsWebhook } = require("./twilioWebhook");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "..", "dashboard"))); // serve frontend
+app.use(express.static(path.join(__dirname, "..", "public"))); // serve frontend
 
 // Webhook route
 app.post("/sms", handleSmsWebhook);
