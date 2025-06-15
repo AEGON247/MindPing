@@ -1,16 +1,24 @@
 // script.js
 import { db, auth } from "./firebase-config.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const ctx = document.getElementById("moodChart").getContext("2d");
 
+// 🔐 Check if user is logged in
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const userId = user.phoneNumber;
     loadMoodChart(userId);
   } else {
-    alert("Please sign in to view your mood data.");
+    window.location.href = "login.html"; // 🔄 Redirect to login
   }
 });
 
