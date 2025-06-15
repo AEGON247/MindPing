@@ -1,8 +1,4 @@
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
+// firebase-config.js (no imports)
 const firebaseConfig = {
   apiKey: "AIzaSyB_C5INwZtDA2cjz5VG3slhpg1hkmvmgH8",
   authDomain: "mind-ping.firebaseapp.com",
@@ -14,6 +10,6 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
-const analytics = getAnalytics(app);
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const analytics = firebase.analytics();
