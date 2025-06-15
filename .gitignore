@@ -1,0 +1,14 @@
+# Node
+node_modules/
+.env
+
+# Firebase Admin Key if it's in a file
+firebase-service-account.json
+
+# Logs and OS junk
+*.log
+.DS_Store
+
+# IDE configs
+.vscode/
+.idea/
