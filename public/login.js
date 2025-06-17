@@ -3,15 +3,6 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-let app;
-    if (!getApps().length) {
-      app = initializeApp(firebaseConfig);
-    } else {
-      app = getApps()[0];
-    }
-const auth = getAuth(app);
-const db = getFirestore(app);
-
 const firebaseConfig = {
       apiKey: "AIzaSyB_C5INwZtDA2cjz5VG3slhpg1hkmvmgH8",
       authDomain: "mind-ping.firebaseapp.com",
@@ -21,6 +12,15 @@ const firebaseConfig = {
       appId: "1:889858727227:web:a1eb1b70b7c0b8b92b6b1e",
       measurementId: "G-HX1QPJPZ8S"
     };
+
+let app;
+    if (!getApps().length) {
+      app = initializeApp(firebaseConfig);
+    } else {
+      app = getApps()[0];
+    }
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
       'size': 'invisible',
