@@ -4,6 +4,7 @@ import {
   RecaptchaVerifier,
   signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_C5INwZtDA2cjz5VG3slhpg1hkmvmgH8",
@@ -17,6 +18,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 window.addEventListener("DOMContentLoaded", () => {
   window.recaptchaVerifier = new RecaptchaVerifier(
@@ -49,7 +51,12 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("verifyOtp").addEventListener("click", async () => {
     const code = document.getElementById("otp").value;
     try {
-      await window.confirmationResult.confirm(code);
+      const result = await window.confirmationResult.confirm(code);
+      const user = result.user;
+      await setDoc(doc(db, "users", user.phoneNumber), {
+        phone: user.phoneNumber,
+        createdAt: new Date().toISOString()
+      });
       alert("✅ Logged in successfully!");
       window.location.href = "index.html";
     } catch (err) {
