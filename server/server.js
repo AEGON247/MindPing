@@ -6,6 +6,7 @@ const cron = require("node-cron");
 const path = require("path");
 const { sendDailyCheckIn } = require("./cron");
 const { handleSmsWebhook } = require("./twilioWebhook");
+const cors = require("cors");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -13,6 +14,10 @@ app.use(express.static(path.join(__dirname, "..", "public"))); // serve frontend
 
 // Webhook route
 app.post("/sms", handleSmsWebhook);
+
+app.use(cors({
+  origin: "mindping.onrender.com",
+}));
 
 // Schedule cron: 9:00 AM daily
 cron.schedule("0 9 * * *", async () => {
