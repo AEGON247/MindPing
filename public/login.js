@@ -1,18 +1,12 @@
 // login.js
-import { auth } from "./firebase-config.js";
-import {
-  RecaptchaVerifier,
-  signInWithPhoneNumber
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Initialize reCAPTCHA
-window.recaptchaVerifier = new RecaptchaVerifier("recaptcha-container", {
-  size: "normal",
-  callback: (response) => {
-    console.log("reCAPTCHA verified");
-  },
-  "expired-callback": () => {
-    alert("reCAPTCHA expired. Please try again.");
+const auth = getAuth(app);
+
+window.recaptchaVerifier = new RecaptchaVerifier('recaptcha-container', {
+  'size': 'invisible',
+  'callback': () => {
+    console.log('Recaptcha solved ✅');
   }
 }, auth);
 
