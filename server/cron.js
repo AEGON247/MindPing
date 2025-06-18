@@ -6,15 +6,17 @@ const admin = require("firebase-admin");
 // Initialize Twilio
 const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 const fromNumber = process.env.TWILIO_PHONE_NUMBER;
+const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_KEY);
 
 // Initialize Firebase Admin
-admin.initializeApp({
-  credential: admin.credential.cert({
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-  }),
-});
+  });
+}
 
 const db = admin.firestore();
 
