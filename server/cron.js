@@ -61,7 +61,7 @@ async function sendDailyCheckIn() {
 }
 
 // Schedule to run daily at 9:00 AM IST (adjust for your timezone)
-cron.schedule("5 6 * * *", () => {
+cron.schedule("* * * * *", () => {
   console.log("📅 Running daily check-in job...");
   sendDailyCheckIn();
 });
